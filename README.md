@@ -1,234 +1,71 @@
-# Survey Campaign Builder
+# drytis-vibe-coding-app
 
-A polished, production-quality **Survey Campaign Builder** built with React, TypeScript, Vite, and Tailwind CSS. Design survey campaigns with a live mobile preview that updates instantly — no save button, no refresh.
+A production-ready, modular React application replicating the **Drytis Engineering & Vibe Coding Workflow**: a Kanban task queue, a live billable coding timer with tier rates, an AI prompt studio, a bug escalation portal, and engineer performance analytics — all persisted to `localStorage`.
 
-Created as the **AppVersal Frontend Intern Assignment 02**.
+- **GitHub Owner:** `afzal63063`
+- **Repository:** `drytis-vibe-coding-app`
+- **Stack:** React 18 · TypeScript · Vite · Tailwind CSS · Lucide React
 
----
-
-## Features
-
-### Content Page
-- **Introduction** — title & description, plus a dynamic count of survey questions
-- **Questions** — dynamically add / remove unlimited question sections
-  - Question title & description
-  - Minimum 2 options per question; add and delete options (unlimited)
-  - **Additional Comments** toggle per question
-- **Logic** — add conditions that redirect to another question or the Thank You page based on a selected option (mock implementation)
-- **Submit** — customizable button text
-- **Thank You Page**
-  - Enable / disable toggle
-  - **Media upload** (PNG / JPG / JPEG / GIF / Lottie) with instant local preview
-  - Title, description, CTA button text, and redirect dropdown/URL
-
-### Styling Page
-Full real-time control over every visual aspect:
-
-**Appearance**
-- Background color
-- Corner radii (Top Left / Top Right / Bottom Left / Bottom Right)
-- Delay
-- Backdrop color & opacity
-
-**Question Title**
-- Color, font family, size, weight
-- Bold / Italic / Underline
-- Alignment & margins
-
-**Subtitle**
-- Color, font, size, weight, style, alignment, margins
-
-**Option List**
-- Radio style / checkbox style
-- Filled option & alternative (grid) layout
-- Option height, bullet spacing, option spacing, corner radius
-
-**Selected / Unselected Option**
-- Border color, text color, background color, border width
-- Font, size, weight, style, alignment
-
-**Additional Comment**
-- Border color, text color, background color, border width
-- Font, size, weight, style, alignment
-
-**CTA Button**
-- Full width, border, text, background
-- Font, size, style, height, width, border width
-- Four corner radius controls, alignment, margins
-
-**Cross Button**
-- Enable / disable
-- Multiple predefined styles + custom cross icon upload
-- Cross color, fill color, stroke color, size, margins
-
-**Thank You**
-- Title styling, subtitle styling, image styling, and button styling
-
-### Live Mobile Preview
-- Realistic mobile phone preview on the right side
-- **Every** content and styling change updates the preview immediately — no save or refresh
-- Supports dynamic questions, dynamic options, additional comments, CTA button, cross button, Thank You page, uploaded media, and all styling changes
-
----
-
-## Tech Stack
-
-| Layer     | Technology                       |
-| --------- | -------------------------------- |
-| Framework | React 18                         |
-| Language  | TypeScript                       |
-| Build     | Vite 5                           |
-| Styling   | Tailwind CSS 3                   |
-| Icons     | Lucide React                     |
-| State     | React Context + useReducer       |
-
----
-
-## Folder Structure
+## Structure
 
 ```
-.
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   ├── common/            # Reusable controls, inputs, style controls, sections
-│   │   ├── content/           # Introduction, Question, Option, Logic, Thank You editors
-│   │   ├── preview/           # MobilePreview
-│   │   ├── styling/           # StylingEditor, TextStyleControls
-│   │   ├── ContentEditor.tsx
-│   │   └── Sidebar.tsx
-│   ├── context/               # SurveyContext + useReducer
-│   ├── data/                  # defaultSurvey, uid/clamp helpers
-│   ├── hooks/                 # useCollapsibleGroups
-│   ├── types/                 # TypeScript interfaces
-│   ├── utils/                 # color helpers
-│   ├── App.tsx
-│   └── main.tsx
-├── .gitignore
-├── index.html
+drytis-vibe-coding-app/
 ├── package.json
+├── vite.config.ts
+├── index.html
+├── eslint.config.js
+├── postcss.config.js
 ├── tailwind.config.js
-└── vite.config.ts
+├── tsconfig.json
+└── src/
+    ├── main.tsx
+    ├── App.tsx
+    ├── index.css
+    ├── context/
+    │   └── AppContext.tsx          # centralized state + localStorage persistence
+    ├── hooks/                       # usePersistentState, useNow, useTypewriter
+    ├── data/                        # mock seed data, prompt templates, AI output simulator
+    ├── types/                       # TypeScript domain model
+    ├── utils/                       # time, billing/tiers, metadata maps
+    └── components/
+        ├── layout/
+        │   ├── Sidebar.tsx          # navigation + engineer/tier card
+        │   └── Header.tsx           # role badge, live status, tier indicator
+        ├── tasks/                   # TaskQueue.tsx (Module A), TaskCard.tsx, TaskModal.tsx
+        ├── timer/                   # TimerBilling.tsx (Module B)
+        ├── prompts/                 # PromptStudio.tsx (Module C)
+        ├── bugs/                    # BugPortal.tsx (Module D)
+        ├── perf/                    # PerformanceAnalytics.tsx (Module E)
+        ├── settings/                # SettingsPanel.tsx
+        └── ui.tsx                   # shared UI primitives
 ```
 
----
+## Modules
 
-## Architecture
-
-All survey state lives in a single **React Context** (`src/context/SurveyContext.tsx`) driven by a **`useReducer`** reducer. Every editor dispatches typed actions that mutate the survey object. Because the live mobile preview subscribes to the same context, every change is reflected immediately.
-
-Core TypeScript interfaces (`src/types/index.ts`):
-
-- `Survey`
-- `Question`
-- `Option`
-- `ConditionalLogic`
-- `ThankYouPage`
-- `Styling`
-
-The UI is composed of reusable components (inputs, toggles, sliders, color pickers, editors) for a clean, production-quality codebase.
-
----
-
-## Installation
-
-### Prerequisites
-- Node.js ≥ 18
-- npm ≥ 9
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/afzal63063/survey-campaign-builder.git
-cd survey-campaign-builder
-
-# 2. Install dependencies
-npm install
-```
-
----
-
-## Development
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:5173](http://localhost:5173) in your browser.
-
----
+| Module | File | Highlights |
+| ------ | ---- | ---------- |
+| A · Task Queue | `tasks/TaskQueue.tsx` | 4 Kanban columns (Todo → In Progress → Review → Done), drag & drop, priority/category/estimate/assignee/client, subtask checklists with inline progress. |
+| B · Timer & Billing | `timer/TimerBilling.tsx` | Real-time stopwatch (Play/Pause/Resume/Complete) and live accrual at Tier-I `$4.26/hr`, Tier-II `$8.50/hr`, Tier-III `$17.15/hr`; switching tiers re-prices session/today/week instantly. |
+| C · Prompt Studio | `prompts/PromptStudio.tsx` | Templates: Refactor & Debug Stack Trace, Generate Unit Tests, API Masking & Security Audit; system + payload inputs, model/temperature runtime, simulated streaming AI output. |
+| D · Bug Portal | `bugs/BugPortal.tsx` | P1–P4 severity form with tab-switch/integrity flags; filterable ticket list with status tags, resolution notes, and delete. |
+| E · Performance | `perf/PerformanceAnalytics.tsx` | Total hours, tasks completed, CSAT (4.9/5.0 default), avg resolution time, and a tier-advancement progress bar. |
 
 ## Scripts
 
-| Command            | Description                        |
-| ------------------ | ---------------------------------- |
-| `npm run dev`      | Start the Vite dev server          |
-| `npm run build`    | Type-check + production build      |
-| `npm run preview`  | Preview the production build       |
-| `npm run lint`     | Run TypeScript type checking       |
+| Command        | Description                        |
+| -------------- | ---------------------------------- |
+| `npm run dev`  | Start the Vite dev server          |
+| `npm run build`| Type-check (`tsc`) + production build |
+| `npm run lint` | Run ESLint (`eslint .`)            |
+| `npm run preview` | Preview the production build    |
 
----
+## State & Storage
 
-## Build
+All state lives in `src/context/AppContext.tsx` and persists under the `localStorage` key **`drytis-workflow-v2`**. On first launch the app seeds mock tasks, time entries, and bug tickets so every dashboard is populated out of the box (Settings → Reset workspace reseeds).
 
-```bash
-# Type-check + production build
-npm run build
-
-# Preview the production build locally
-npm run preview
-```
-
----
-
-## GitHub
-
-Repository: [https://github.com/afzal63063/survey-campaign-builder.git](https://github.com/afzal63063/survey-campaign-builder.git)
+## Getting started
 
 ```bash
-git init
-git add .
-git commit -m "feat: survey campaign builder"
-git branch -M main
-git remote add origin https://github.com/afzal63063/survey-campaign-builder.git
-git push -u origin main
+npm install
+npm run dev       # http://localhost:5173
 ```
-
----
-
-## Deployment
-
-The frontend builds to a static `dist/` folder and can be deployed to any static host.
-
-### Vercel
-
-```bash
-npm run build
-```
-
-Deploy the repository root and set the build command to `npm run build` with output directory `dist`.
-
-### Netlify
-
-```bash
-npm run build
-```
-
-Deploy the `dist/` directory or connect the repo with build command `npm run build`.
-
-### GitHub Pages
-
-Push to `main`, then deploy the `dist/` folder using GitHub Actions or any static hosting.
-
----
-
-## Links
-
-- **GitHub Repository:** *(add your repository URL here)*
-- **Live Demo:** *(add your deployed URL here)*
-
----
-
-## License
-
-Created as an assignment submission for the **AppVersal Frontend Intern Assignment 02**.

@@ -1,164 +1,86 @@
-export interface Option {
-  id: string
-  text: string
+export type TaskStatus = 'todo' | 'inProgress' | 'review' | 'done';
+export type Priority = 'low' | 'medium' | 'high' | 'critical';
+
+export const TASK_CATEGORIES = [
+  'API Bug',
+  'React UI',
+  'Prompt Optimization',
+  'Database',
+  'DevOps',
+  'Security',
+  'Testing',
+  'Documentation',
+] as const;
+export type TaskCategory = (typeof TASK_CATEGORIES)[number];
+
+export interface Subtask {
+  id: string;
+  title: string;
+  done: boolean;
 }
 
-export interface ConditionalLogic {
-  id: string
-  questionId: string
-  operator: 'equals' | 'not_equals' | 'contains'
-  value: string
-  redirectQuestionId: string | null
+export interface Task {
+  id: string;
+  title: string;
+  description?: string;
+  category: TaskCategory;
+  priority: Priority;
+  estimatedMinutes: number;
+  assignee: string;
+  clientName: string;
+  status: TaskStatus;
+  subtasks: Subtask[];
+  createdAt: number;
+  updatedAt: number;
 }
 
-export interface Question {
-  id: string
-  title: string
-  description: string
-  options: Option[]
-  hasAdditionalComments: boolean
+export type Severity = 'P1' | 'P2' | 'P3' | 'P4';
+export type BugStatus = 'open' | 'investigating' | 'escalated' | 'resolved';
+
+export interface BugReport {
+  id: string;
+  title: string;
+  stackTrace: string;
+  severity: Severity;
+  flags: string[];
+  status: BugStatus;
+  reporter: string;
+  clientName: string;
+  createdAt: number;
+  resolutionNote?: string;
 }
 
-export interface ThankYouPage {
-  enabled: boolean
-  media: string | null
-  mediaType: 'image' | 'lottie' | null
-  title: string
-  description: string
-  ctaText: string
-  redirectUrl: string
+export const BUG_FLAGS = [
+  { key: 'tabSwitch', label: 'Tab-switch detected', warning: true },
+  { key: 'integrity', label: 'Integrity flags raised', warning: true },
+  { key: 'aiAssisted', label: 'Vibe-coded (AI assisted)', warning: false },
+] as const;
+export type BugFlagKey = (typeof BUG_FLAGS)[number]['key'];
+
+export interface TimeEntry {
+  id: string;
+  taskId: string;
+  taskTitle: string;
+  clientName: string;
+  seconds: number;
+  date: string; // yyyy-mm-dd (local)
+  tier: TierId;
 }
 
-export type FontWeight = 300 | 400 | 500 | 600 | 700 | 800
+export type TierId = 'tier1' | 'tier2' | 'tier3';
 
-export type FontFamily =
-  | 'Inter'
-  | 'Roboto'
-  | 'Poppins'
-  | 'Georgia'
-  | 'Tahoma'
-  | 'Courier New'
-
-export type FontStyle = 'normal' | 'italic'
-
-export type TextAlign = 'left' | 'center' | 'right'
-
-export type VerticalAlign = 'top' | 'middle' | 'bottom'
-
-export interface TextStyling {
-  color: string
-  fontFamily: FontFamily
-  fontSize: number
-  fontWeight: FontWeight
-  fontStyle: FontStyle
-  textAlign: TextAlign
-  marginTop: number
-  marginBottom: number
-  marginLeft: number
-  marginRight: number
+export interface TimerState {
+  taskId: string | null;
+  running: boolean;
+  startedAt: number; // epoch ms of last resume
+  accumulated: number; // seconds accrued (excluding current run)
 }
 
-export type OptionLayout = 'list' | 'grid'
-
-export interface Styling {
-  backgroundColor: string
-  backdropColor: string
-  backdropOpacity: number
-  cornerRadiusTopLeft: number
-  cornerRadiusTopRight: number
-  cornerRadiusBottomLeft: number
-  cornerRadiusBottomRight: number
-  delay: number
-
-  questionTitle: TextStyling
-  subtitle: TextStyling
-
-  optionLayout: OptionLayout
-  optionFontSize: number
-  optionSpacing: number
-  optionHeight: number
-  bulletSpacing: number
-  optionCornerRadius: number
-
-  controlStyle: 'radio' | 'checkbox'
-
-  controlColor: string
-  optionBgFill: string
-  optionBgEmpty: string
-
-  selectedOption: {
-    fill: string
-    textColor: string
-    borderColor: string
-    borderWidth: number
-  }
-  unselectedOption: {
-    fill: string
-    textColor: string
-    borderColor: string
-    borderWidth: number
-  }
-
-  additionalComment: {
-    enabled: boolean
-    placeholder: string
-    bgColor: string
-    textColor: string
-    borderColor: string
-    textSize: number
-    padding: number
-    borderRadius: number
-  }
-
-  cta: {
-    text: string
-    bgColor: string
-    textColor: string
-    fontSize: number
-    fontWeight: FontWeight
-    padding: number
-    borderRadius: number
-    marginTop: number
-  }
-
-  cross: {
-    visible: boolean
-    color: string
-    size: number
-    backgroundColor: string
-  }
-
-  thankYou: {
-    backgroundColor: string
-    padding: number
-    borderRadius: number
-  }
-  thankYouImage: {
-    height: number
-    borderRadius: number
-    marginBottom: number
-  }
-  thankYouTitle: TextStyling
-  thankYouDescription: TextStyling
-  thankYouButton: {
-    bgColor: string
-    textColor: string
-    fontSize: number
-    borderRadius: number
-    padding: number
-  }
+export interface Settings {
+  engineerName: string;
+  roleLabel: string;
+  csat: number;
+  nextTierHours: number;
 }
 
-export interface Survey {
-  introduction: {
-    title: string
-    description: string
-  }
-  questions: Question[]
-  conditionalLogic: ConditionalLogic[]
-  thankYou: ThankYouPage
-  styling: Styling
-}
-
-export type SectionId = 'content' | 'styling'
-export type ContentTab = 'introduction' | 'questions' | 'logic' | 'thankyou'
+export type ViewId = 'tasks' | 'timer' | 'prompts' | 'bugs' | 'performance' | 'settings';
